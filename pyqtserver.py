@@ -10,6 +10,14 @@ TCP_PORT = 5005
 BUFFER_SIZE = 1
 
 
+class QWidget(QWidget):
+
+    def keyPressEvent(self, event):
+        print event.text()
+
+    def keyReleaseEvent(self, event):
+        print("x")
+
 
 def window():
    app = QApplication(sys.argv)
@@ -89,11 +97,11 @@ def window():
    c7.clicked.connect(c7_clicked)
 
 
-
    win.setGeometry(100,100,200,470)
    win.setWindowTitle("PyQt")
    win.show()
    sys.exit(app.exec_())
+
 
 def b1_clicked():
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -185,9 +193,6 @@ def c7_clicked():
    s.send(" ")
    #data = s.recv(BUFFER_SIZE)
    s.close()
-
-
-
 
 
 if __name__ == '__main__':

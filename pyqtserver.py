@@ -49,7 +49,48 @@ def window():
    b6.move(80,180)
    b6.clicked.connect(b6_clicked)
 
-   win.setGeometry(100,100,200,220)
+   label = QLabel(win)
+   label.setText("CAR CONTROLS:")
+   label.move(50, 230)
+
+   c1 = QPushButton(win)
+   c1.setText("forward")
+   c1.move(50,260)
+   c1.clicked.connect(c1_clicked)
+
+   c2 = QPushButton(win)
+   c2.setText("left")
+   c2.move(20,300)
+   c2.clicked.connect(c2_clicked)
+
+   c3 = QPushButton(win)
+   c3.setText("right")
+   c3.move(80,300)
+   c3.clicked.connect(c3_clicked)
+
+   c4 = QPushButton(win)
+   c4.setText("backward")
+   c4.move(50,340)
+   c4.clicked.connect(c4_clicked)
+
+   c5 = QPushButton(win)
+   c5.setText("faster")
+   c5.move(20,390)
+   c5.clicked.connect(c5_clicked)
+
+   c6 = QPushButton(win)
+   c6.setText("slower")
+   c6.move(80,390)
+   c6.clicked.connect(c6_clicked)
+
+   c7 = QPushButton(win)
+   c7.setText("stop")
+   c7.move(50,430)
+   c7.clicked.connect(c7_clicked)
+
+
+
+   win.setGeometry(100,100,200,470)
    win.setWindowTitle("PyQt")
    win.show()
    sys.exit(app.exec_())
@@ -95,6 +136,59 @@ def b6_clicked():
    s.send("b")
    #data = s.recv(BUFFER_SIZE)
    s.close()
+
+def c1_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("w")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def c2_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("a")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def c3_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("d")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def c4_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("s")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def c5_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("q")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def c6_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("e")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def c7_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send(" ")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+
+
+
 
 if __name__ == '__main__':
    window()

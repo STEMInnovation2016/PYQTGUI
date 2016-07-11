@@ -22,8 +22,8 @@ class QWidget(QWidget):
 
         self.sl = QSlider(Qt.Horizontal)
         self.sl.setMinimum(1)
-        self.sl.setMaximum(9)
-        self.sl.setValue(5)
+        self.sl.setMaximum(19)
+        self.sl.setValue(10)
         self.sl.setTickPosition(QSlider.TicksBelow)
         self.sl.setTickInterval(1)
 
@@ -34,13 +34,24 @@ class QWidget(QWidget):
 
     def valuechange(self):
         size = self.sl.value()
-        str_size = str(size)
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-        s.send(str_size)
-        print(str_size)
+
+        if (size < 10):
+            str_size = str(size)
+            s.send(str_size)
+            s.send("w")
+        elif (size == 10):
+            str_size = str(5)
+            s.send(str_size)
+            s.send(" ")
+        else:
+            str_size = str(size - 10)
+            s.send(str_size)
+            s.send("s")
+
         #data = s.recv(BUFFER_SIZE)
-        #s.close()
+        s.close()
 
 
     def keyPressEvent(self, event):

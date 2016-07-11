@@ -5,9 +5,28 @@ import socket
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-TCP_IP = '192.168.2.126'
+TCP_IP = '192.168.2.125'
 TCP_PORT = 5005
 BUFFER_SIZE = 1
+A = 0
+
+
+class QWidget(QWidget):
+
+    def keyPressEvent(self, event):
+        print event.text()
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send(event.text())
+        #data = s.recv(BUFFER_SIZE)
+        s.close()
+
+    def keyReleaseEvent(self, event):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send(" ")
+        #data = s.recv(BUFFER_SIZE)
+        s.close()
 
 
 
@@ -88,12 +107,30 @@ def window():
    c7.move(50,430)
    c7.clicked.connect(c7_clicked)
 
+   l1 = QPushButton(win)
+   l1.setText("on")
+   l1.move(20,470)
+   l1.clicked.connect(l1_clicked)
+
+   l2 = QPushButton(win)
+   l2.setText("off")
+   l2.move(80,470)
+   l2.clicked.connect(l2_clicked)
 
 
    win.setGeometry(100,100,200,470)
    win.setWindowTitle("PyQt")
    win.show()
    sys.exit(app.exec_())
+
+def dummy_down():
+    A = 1
+    while(A == 1):
+        print("hey")
+def dummy_released():
+    A = 0
+    print("bye")
+
 
 def b1_clicked():
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -186,6 +223,19 @@ def c7_clicked():
    #data = s.recv(BUFFER_SIZE)
    s.close()
 
+def l1_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("g")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
+
+def l2_clicked():
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   s.connect((TCP_IP, TCP_PORT))
+   s.send("h")
+   #data = s.recv(BUFFER_SIZE)
+   s.close()
 
 
 

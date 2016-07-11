@@ -30,28 +30,37 @@ class QWidget(QWidget):
         layout.addWidget(self.sl)
         self.sl.valueChanged.connect(self.valuechange)
         self.setLayout(layout)
+        self.sl.sliderReleased.connect(self.sliderreleased)
 
 
     def valuechange(self):
         size = self.sl.value()
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((TCP_IP, TCP_PORT))
+        #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #s.connect((TCP_IP, TCP_PORT))
 
         if (size < 10):
-            str_size = str(size)
-            s.send(str_size)
-            s.send("w")
+            str_size = str(10 - size)
+            #s.send(str_size)
+            #s.send("s")
+            print(str_size)
         elif (size == 10):
-            str_size = str(5)
-            s.send(str_size)
-            s.send(" ")
+            str_size = str(1)
+            #s.send(str_size)
+            #s.send(" ")
+            print(str_size)
         else:
             str_size = str(size - 10)
-            s.send(str_size)
-            s.send("s")
+            #s.send(str_size)
+            #s.send("w")
+            print(str_size)
 
         #data = s.recv(BUFFER_SIZE)
-        s.close()
+        #s.close()
+
+    def sliderreleased(self):
+        print("x")
+        self.sl.setValue(10)
+
 
 
     def keyPressEvent(self, event):

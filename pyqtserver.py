@@ -12,6 +12,36 @@ A = 0
 
 
 class QWidget(QWidget):
+    def __init__(self, parent = None):
+        super(QWidget, self).__init__(parent)
+
+        layout = QVBoxLayout()
+        self.l1 = QLabel("Test")
+        self.l1.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.l1)
+
+        self.sl = QSlider(Qt.Horizontal)
+        self.sl.setMinimum(1)
+        self.sl.setMaximum(9)
+        self.sl.setValue(5)
+        self.sl.setTickPosition(QSlider.TicksBelow)
+        self.sl.setTickInterval(1)
+
+        layout.addWidget(self.sl)
+        self.sl.valueChanged.connect(self.valuechange)
+        self.setLayout(layout)
+
+
+    def valuechange(self):
+        size = self.sl.value()
+        str_size = str(size)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send(str_size)
+        print(str_size)
+        #data = s.recv(BUFFER_SIZE)
+        #s.close()
+
 
     def keyPressEvent(self, event):
         print event.text()
@@ -29,8 +59,10 @@ class QWidget(QWidget):
         s.close()
 
 
-
 def window():
+
+
+
    app = QApplication(sys.argv)
    win = QWidget()
 
@@ -96,16 +128,6 @@ def window():
    c4.pressed.connect(c4_clicked)
    c4.released.connect(released)
 
-   c5 = QPushButton(win)
-   c5.setText("faster")
-   c5.move(20,390)
-   c5.clicked.connect(c5_clicked)
-
-   c6 = QPushButton(win)
-   c6.setText("slower")
-   c6.move(80,390)
-   c6.clicked.connect(c6_clicked)
-
    l1 = QPushButton(win)
    l1.setText("on")
    l1.move(20,440)
@@ -122,13 +144,6 @@ def window():
    win.show()
    sys.exit(app.exec_())
 
-def dummy_down():
-    A = 1
-    while(A == 1):
-        print("hey")
-def dummy_released():
-    A = 0
-    print("bye")
 
 
 def b1_clicked():
@@ -201,20 +216,6 @@ def c4_clicked():
    #data = s.recv(BUFFER_SIZE)
    s.close()
 
-def c5_clicked():
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   s.connect((TCP_IP, TCP_PORT))
-   s.send("q")
-   #data = s.recv(BUFFER_SIZE)
-   s.close()
-
-def c6_clicked():
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   s.connect((TCP_IP, TCP_PORT))
-   s.send("e")
-   #data = s.recv(BUFFER_SIZE)
-   s.close()
-
 def released():
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    s.connect((TCP_IP, TCP_PORT))
@@ -235,9 +236,6 @@ def l2_clicked():
    s.send("h")
    #data = s.recv(BUFFER_SIZE)
    s.close()
-
-
-
 
 if __name__ == '__main__':
    window()

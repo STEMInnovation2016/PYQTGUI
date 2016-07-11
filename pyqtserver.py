@@ -75,22 +75,26 @@ def window():
    c1 = QPushButton(win)
    c1.setText("forward")
    c1.move(50,260)
-   c1.clicked.connect(c1_clicked)
+   c1.pressed.connect(c1_clicked)
+   c1.released.connect(released)
 
    c2 = QPushButton(win)
    c2.setText("left")
    c2.move(20,300)
-   c2.clicked.connect(c2_clicked)
+   c2.pressed.connect(c2_clicked)
+   c2.released.connect(released)
 
    c3 = QPushButton(win)
    c3.setText("right")
    c3.move(80,300)
-   c3.clicked.connect(c3_clicked)
+   c3.pressed.connect(c3_clicked)
+   c3.released.connect(released)
 
    c4 = QPushButton(win)
    c4.setText("backward")
    c4.move(50,340)
-   c4.clicked.connect(c4_clicked)
+   c4.pressed.connect(c4_clicked)
+   c4.released.connect(released)
 
    c5 = QPushButton(win)
    c5.setText("faster")
@@ -102,19 +106,14 @@ def window():
    c6.move(80,390)
    c6.clicked.connect(c6_clicked)
 
-   c7 = QPushButton(win)
-   c7.setText("stop")
-   c7.move(50,430)
-   c7.clicked.connect(c7_clicked)
-
    l1 = QPushButton(win)
    l1.setText("on")
-   l1.move(20,470)
+   l1.move(20,440)
    l1.clicked.connect(l1_clicked)
 
    l2 = QPushButton(win)
    l2.setText("off")
-   l2.move(80,470)
+   l2.move(80,440)
    l2.clicked.connect(l2_clicked)
 
 
@@ -216,7 +215,7 @@ def c6_clicked():
    #data = s.recv(BUFFER_SIZE)
    s.close()
 
-def c7_clicked():
+def released():
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    s.connect((TCP_IP, TCP_PORT))
    s.send(" ")

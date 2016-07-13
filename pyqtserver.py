@@ -9,7 +9,7 @@ import webbrowser
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-TCP_IP = '192.168.2.125'
+TCP_IP = '192.168.2.122'
 TCP_PORT = 5005
 BUFFER_SIZE = 1
 A = 0
@@ -144,75 +144,75 @@ def window():
 
    b2 = QPushButton(win)
    b2.setText("Pan left")
-   b2.move(110,80)
+   b2.move(110,90)
    b2.clicked.connect(b2_clicked)
 
    b3 = QPushButton(win)
    b3.setText("Pan right")
-   b3.move(230,80)
+   b3.move(230,90)
    b3.clicked.connect(b3_clicked)
 
    b4 = QPushButton(win)
    b4.setText("Tilt down")
-   b4.move(170,100)
+   b4.move(170,120)
    b4.clicked.connect(b4_clicked)
 
    b5 = QPushButton(win)
    b5.setText("Face front")
-   b5.move(110,120)
+   b5.move(110,150)
    b5.clicked.connect(b5_clicked)
 
    b6 = QPushButton(win)
    b6.setText("Face back")
-   b6.move(230,120)
+   b6.move(230,150)
    b6.clicked.connect(b6_clicked)
 
    c1 = QPushButton(win)
    c1.setText("Forward")
-   c1.move(170,180)
+   c1.move(170,200)
    c1.pressed.connect(c1_clicked)
    c1.released.connect(released)
 
    c2 = QPushButton(win)
    c2.setText("Left")
-   c2.move(110,200)
+   c2.move(110,230)
    c2.pressed.connect(c2_clicked)
    c2.released.connect(released)
 
    c3 = QPushButton(win)
    c3.setText("Right")
-   c3.move(230,200)
+   c3.move(230,230)
    c3.pressed.connect(c3_clicked)
    c3.released.connect(released)
 
    c4 = QPushButton(win)
    c4.setText("Backward")
-   c4.move(170,220)
+   c4.move(170,260)
    c4.pressed.connect(c4_clicked)
    c4.released.connect(released)
 
    l1 = QPushButton(win)
    l1.setText("LED On")
-   l1.move(110,280)
+   l1.move(110,310)
    l1.clicked.connect(l1_clicked)
 
    l2 = QPushButton(win)
    l2.setText("LEF Off")
-   l2.move(230,280)
+   l2.move(230,310)
    l2.clicked.connect(l2_clicked)
 
    browser = QPushButton(win)
    browser.setText("Stream Flir")
-   browser.move(110,340)
+   browser.move(110,360)
    browser.clicked.connect(browser_clicked)
 
    gstreamer = QPushButton(win)
    gstreamer.setText("Stream Video")
-   gstreamer.move(230,340)
+   gstreamer.move(230,360)
    gstreamer.clicked.connect(gstreamer_clicked)
 
 
-   win.setGeometry(0,0,410,500)
+   win.setGeometry(20,40,410,500)
    win.setWindowTitle("PyQt")
    win.show()
    sys.exit(app.exec_())
@@ -311,11 +311,10 @@ def l2_clicked():
    s.close()
 
 def browser_clicked():
-    webbrowser.open_new_tab("http://192.168.2.127:8080")
+    webbrowser.open_new_tab("http://192.168.2.122:8080")
 
 def gstreamer_clicked():
-    subprocess.Popen(["gst-launch-1.0", "-v", "tcpclientsrc", "host=192.168.2.127", "port=5000", "!", "gdpdepay", "!", "rtph264depay", "!", "avdec_h264", "!", "videoconvert", "!", "autovideosink", "sync=false"])
-
+    subprocess.Popen(["C:\Users\shoug\stream.bat"]) #put the stream file in the original directory
 
 if __name__ == '__main__':
    window()

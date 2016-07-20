@@ -76,6 +76,11 @@ class QWidget(QWidget):
 
         self.imagelabel = QLabel()
         layout.addWidget(self.imagelabel)
+        self.imagelabel.setMouseTracking(True)
+
+        self.tempLabel = QLabel()
+        layout.addWidget(self.tempLabel)
+        self.tempLabel.setText("TEMPERATURE")
 
 
     def img_clicked(self):
@@ -140,9 +145,18 @@ class QWidget(QWidget):
             data = f.read()
             f.close()
 
+        def getPos(event):
+            x = event.pos().x()
+            y = event.pos().y()
+            realx = int(x/5)
+            realy = int(y/5)
+            cel_string = str(celsius[realy][realx])
+            self.tempLabel.setText(cel_string)
+
+
         pixmap = QPixmap(os.getcwd() + '/latest.jpg')
         self.imagelabel.setPixmap(pixmap)
-
+        self.imagelabel.mousePressEvent =  getPos
 
 
     def valuechange(self):

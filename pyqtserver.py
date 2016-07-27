@@ -14,11 +14,12 @@ from PyQt4.QtGui import *
 
 import time
 from PIL import Image
+from PIL import ImageGrab
 import numpy
 import urllib
 from lxml import html
 import shlex
-
+import datetime
 from PIL import Image, ImageOps, ImageEnhance, ImageFont, ImageDraw
 
 TCP_IP = '169.254.31.4' #other computer's IP
@@ -26,6 +27,9 @@ TCP_PORT = 5005
 BUFFER_SIZE = 1
 A = 0
 
+
+minT = float(100)
+maxT = float(200)
 
 
 class QWidget(QWidget):
@@ -62,11 +66,10 @@ class QWidget(QWidget):
         self.gstreamer.setText("Stream Video")
         self.gstreamer.clicked.connect(self.gstreamer_clicked)
 
-        self.halt = QPushButton()
-        layout.addWidget(self.halt)
-        self.halt.setText("Power Off")
-        self.halt.clicked.connect(self.halt_clicked)
-
+        self.sshot = QPushButton()
+        layout.addWidget(self.sshot)
+        self.sshot.setText("Screen capture")
+        self.sshot.clicked.connect(self.sshot_clicked)
 
         self.imagelabel = QLabel()
         layout.addWidget(self.imagelabel)
@@ -84,6 +87,42 @@ class QWidget(QWidget):
         self.rawLabel.setText("RAW")
 
 
+        self.l11 = QLabel("Minimum: ")
+        self.l11.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.l11)
+
+        self.sp = QSpinBox()
+        layout.addWidget(self.sp)
+        self.sp.setMinimum(-999)
+        self.sp.setMaximum(999)
+        self.sp.valueChanged.connect(self.valuechange)
+
+        self.l12 = QLabel("Maximum: ")
+        self.l12.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.l12)
+
+        self.sp2 = QSpinBox()
+        layout.addWidget(self.sp2)
+        self.sp2.setMinimum(-999)
+        self.sp2.setMaximum(999)
+
+        self.sp2.valueChanged.connect(self.valuechange2)
+
+    def sshot_clicked(self):
+        screenshot_name = str(datetime.datetime.now().strftime("screenshots/%I-%M-%S-%p-%B-%d-%Y.jpeg"))
+        #screenshot_name = "image" + str(datetime.datetime.now()) + ".jpg"
+        ImageGrab.grab().save(screenshot_name, "JPEG")
+
+    def valuechange(self):
+        self.l11.setText("Minimum: "+str(self.sp.value()))
+        global minT
+        minT = float(self.sp.value())
+
+    def valuechange2(self):
+        self.l12.setText("Maximum: "+str(self.sp2.value()))
+        global maxT
+        maxT = float(self.sp2.value())
+
     def l1_clicked(self):
        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
        s.connect((TCP_IP, TCP_PORT))
@@ -100,15 +139,6 @@ class QWidget(QWidget):
 
     def gstreamer_clicked(self):
         subprocess.Popen(["C:\\Users\\facilities\\stream.bat"]) #put the stream file in the original directory
-
-
-
-    def halt_clicked(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((TCP_IP, TCP_PORT))
-        s.send("halt")
-        #data = s.recv(BUFFER_SIZE)
-        s.close()
 
     def img_clicked(self):
 
@@ -144,9 +174,6 @@ class QWidget(QWidget):
                 #fheit[y][x] = 0.032622222 * float(raw[1+ 80 * y + x]) - 539.388883 + CameraK + 273.15
                 #fheit[y][x] = 0.05872 * float(raw[1+ 80 * y + x]) - 479.22999 + CameraF
                 fheit[y][x] = 0.03826 * float(raw[1+ 80 * y + x]) - 270.2783 + (0.6515*CameraF)
-
-        minT = float(100)
-        maxT = float(250)
 
 
 

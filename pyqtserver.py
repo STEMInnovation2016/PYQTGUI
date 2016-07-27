@@ -62,11 +62,18 @@ class QWidget(QWidget):
         self.gstreamer.setText("Stream Video")
         self.gstreamer.clicked.connect(self.gstreamer_clicked)
 
+        self.halt = QPushButton()
+        layout.addWidget(self.halt)
+        self.halt.setText("Power Off")
+        self.halt.clicked.connect(self.halt_clicked)
+
 
         self.imagelabel = QLabel()
         layout.addWidget(self.imagelabel)
         self.imagelabel.setMouseTracking(True)
 
+        self.scaleLabel = QLabel()
+        layout.addWidget(self.scaleLabel)
 
         self.tempLabel = QLabel()
         layout.addWidget(self.tempLabel)
@@ -92,8 +99,16 @@ class QWidget(QWidget):
        s.close()
 
     def gstreamer_clicked(self):
-        subprocess.Popen(["C:\Users\shoug\stream.bat"]) #put the stream file in the original directory
+        subprocess.Popen(["C:\\Users\\facilities\\stream.bat"]) #put the stream file in the original directory
 
+
+
+    def halt_clicked(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send("halt")
+        #data = s.recv(BUFFER_SIZE)
+        s.close()
 
     def img_clicked(self):
 
@@ -103,7 +118,6 @@ class QWidget(QWidget):
         #data = s.recv(BUFFER_SIZE)
         s.close()
         #subprocess.Popen(["C:\Users\shoug\flir.bat"])
-        print("TAKENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
 
         time.sleep(2)
 
@@ -128,10 +142,11 @@ class QWidget(QWidget):
         for y in range(60):
             for x in range(80):
                 #fheit[y][x] = 0.032622222 * float(raw[1+ 80 * y + x]) - 539.388883 + CameraK + 273.15
-                fheit[y][x] = 0.05872 * float(raw[1+ 80 * y + x]) - 479.22999 + CameraF
+                #fheit[y][x] = 0.05872 * float(raw[1+ 80 * y + x]) - 479.22999 + CameraF
+                fheit[y][x] = 0.03826 * float(raw[1+ 80 * y + x]) - 270.2783 + (0.6515*CameraF)
 
-        minT = float(130)
-        maxT = float(300)
+        minT = float(100)
+        maxT = float(250)
 
 
 
@@ -167,6 +182,59 @@ class QWidget(QWidget):
         quality_val = 80
         image.save(TmpFileName, quality=quality_val)
 
+
+        colArray = [float(0)]*80
+        difference = float(maxT - minT)
+        oneHop = 0
+        oneHopTemp = difference/80
+        for col in range(80):
+            colArray[col] = oneHop + minT
+            oneHop = oneHop + oneHopTemp
+
+        #print colArray
+
+        colors2 = numpy.ndarray(shape = (1,80,3), dtype = 'uint8')
+        for y in range(1):
+            for x in range(80):
+                a = (colArray[x] - minT)/(maxT - minT)
+                if a < 0:
+                    a = 0
+                if a > 1:
+                    a = 1
+                colors2[y][x][0] = 170 - a * 170
+                colors2[y][x][1] = 255
+                colors2[y][x][2] = 128
+
+        #print colors2
+        #image = Image.fromarray(colors2, mode = 'HSV').convert('RGB')
+
+        image2 = Image.fromarray(colors2, mode = 'HSV').convert('RGB')
+
+
+                        #image = image.rotate(90).resize((80*5, 60*5), Image.ANTIALIAS)
+        image2 = image2.rotate(0).resize((80*5, 5*6))
+
+
+        draw = ImageDraw.Draw(image2)
+        #draw.text((0,10), "This is a test", (255,255,0))
+        for degree in range(80):
+            if ((degree+5) % 10 == 0):
+                font = ImageFont.truetype("calibri.ttf", 15)
+                font2 = ImageFont.truetype("calibri.ttf", 25)
+
+                draw.text((degree*5,-7),".", (255,255,255), font = font2)
+                draw.text((degree*5-7,13), str(int(colArray[degree])), (255,255,255), font=font)
+        TmpFileName2 = "scale.jpg"
+
+
+        quality_val2 = 80
+        image2.save(TmpFileName2, quality=quality_val2)
+
+        with open(TmpFileName2, 'rb') as f:
+            data = f.read()
+            f.close()
+
+
         with open(TmpFileName, 'rb') as f:
             data = f.read()
             f.close()
@@ -185,6 +253,9 @@ class QWidget(QWidget):
         pixmap = QPixmap(os.getcwd() + '/latest.jpg')
         self.imagelabel.setPixmap(pixmap)
         self.imagelabel.mousePressEvent =  getPos
+
+        pixmap2 = QPixmap(os.getcwd() + '/scale.jpg')
+        self.scaleLabel.setPixmap(pixmap2)
 
 def window():
 
@@ -237,7 +308,7 @@ def window():
        global left_speed
 
        for event in pygame.event.get():
-           print event
+           #print event
            #print event.type
            event_type = event.type
            #print str(event.value)
@@ -267,8 +338,8 @@ def window():
                    W = ((100 - abs(y_coord))*(x_coord_inverted/100)) + x_coord_inverted
                    R = (((V + W)/2)*max_speed)/100
                    L = (((V - W)/2)*max_speed)/100
-                   print "R: "
-                   print R
+                   #print "R: "
+                   #print R
                    right_speed = R
                    left_speed = L
 
@@ -311,22 +382,22 @@ def window():
                if event_value == (0, 1):      #Forward
                    right_speed = max_speed
                    left_speed = max_speed
-                   print "Constant Forward"
+                   #print "Constant Forward"
 
                elif event_value == (0, -1):   #Reverse
                    right_speed = -max_speed
                    left_speed = -max_speed
-                   print "Constant Reverse"
+                   #print "Constant Reverse"
 
                elif event_value == (1, 0):    #Rotate Right
                    right_speed = -max_speed
                    left_speed = max_speed
-                   print "Rotate right"
+                   #print "Rotate right"
 
                elif event_value == (-1,0):    #Rotate Left
                    right_speed = max_speed
                    left_speed = -max_speed
-                   print "Rotate left"
+                   #print "Rotate left"
 
 
                else:
@@ -344,7 +415,7 @@ def window():
                        time.sleep(0.02)
 
                        temp_message = "R" + str(right_speed) + "L" + str(left_speed)
-                       print temp_message
+                       #print temp_message
    ##                   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    ##                    s.connect((TCP_IP, TCP_PORT))
    ##                    s.send(temp_message)
@@ -379,7 +450,7 @@ def window():
 
 
 
-           print message
+           #print message
            #print "max_speed: "
            #print max_speed
            #if message != "":
